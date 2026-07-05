@@ -171,24 +171,6 @@ def test_add_knowledge_marks_all_unknown_neighbors_as_mines() -> None:
     assert agent.knowledge == []
 
 
-def test_direct_inference_does_not_apply_subset_reasoning_yet() -> None:
-    agent = MinesweeperAgent(
-        board=Board(height=3, width=3),
-        knowledge=[
-            Sentence(cells={(0, 1), (1, 0)}, count=1),
-        ],
-    )
-
-    agent.add_knowledge((0, 0), count=1)
-
-    assert agent.mines == set()
-    assert agent.safes == {(0, 0)}
-    assert agent.knowledge == [
-        Sentence(cells={(0, 1), (1, 0)}, count=1),
-        Sentence(cells={(0, 1), (1, 0), (1, 1)}, count=1),
-    ]
-
-
 def test_update_known_cells_propagates_safe_cell_to_other_sentences() -> None:
     agent = MinesweeperAgent(
         board=Board(height=3, width=3),
@@ -198,7 +180,7 @@ def test_update_known_cells_propagates_safe_cell_to_other_sentences() -> None:
         ],
     )
 
-    agent._update_known_cells()
+    agent.update_knowledge()
 
     assert agent.safes == {(0, 1)}
     assert agent.mines == {(1, 0)}
@@ -214,7 +196,71 @@ def test_update_known_cells_propagates_mine_to_other_sentences() -> None:
         ],
     )
 
-    agent._update_known_cells()
+    agent.update_knowledge()
 
     assert agent.mines == {(0, 1)}
+    assert agent.safes == {(1, 0)}
     assert agent.knowledge == []
+
+
+def test_update_knowledge_infers_safe_cell_from_subset_relationship() -> None:
+    agent = MinesweeperAgent(
+        board=Board(height=3, width=3),
+        knowledge=[
+            Sentence(cells={(0, 1), (1, 0), (1, 1)}, count=1),
+            Sentence(cells={(0, 1), (1, 0)}, count=1),
+        ],
+    )
+
+    agent.update_knowledge()
+
+    assert agent.safes == {(1, 1)}
+    assert agent.mines == set()
+    assert agent.knowledge == [Sentence(cells={(0, 1), (1, 0)}, count=1)]
+
+
+def test_update_knowledge_infers_mine_from_subset_relationship() -> None:
+    agent = MinesweeperAgent(
+        board=Board(height=3, width=3),
+        knowledge=[
+            Sentence(cells={(0, 1), (1, 0), (1, 1)}, count=2),
+            Sentence(cells={(0, 1), (1, 0)}, count=1),
+        ],
+    )
+
+    agent.update_knowledge()
+
+    assert agent.mines == {(1, 1)}
+    assert agent.safes == set()
+    assert agent.knowledge == [Sentence(cells={(0, 1), (1, 0)}, count=1)]
+
+
+def test_update_knowledge_does_not_duplicate_inferred_sentences() -> None:
+    agent = MinesweeperAgent(
+        board=Board(height=3, width=3),
+        knowledge=[
+            Sentence(cells={(0, 1), (1, 0), (1, 1)}, count=1),
+            Sentence(cells={(0, 1), (1, 0)}, count=1),
+            Sentence(cells={(1, 1)}, count=0),
+        ],
+    )
+
+    agent.update_knowledge()
+
+    assert agent.safes == {(1, 1)}
+    assert agent.knowledge == [Sentence(cells={(0, 1), (1, 0)}, count=1)]
+
+
+def test_add_knowledge_applies_subset_inference() -> None:
+    agent = MinesweeperAgent(
+        board=Board(height=3, width=3),
+        knowledge=[
+            Sentence(cells={(0, 1), (1, 0)}, count=1),
+        ],
+    )
+
+    agent.add_knowledge((0, 0), count=1)
+
+    assert agent.safes == {(0, 0), (1, 1)}
+    assert agent.mines == set()
+    assert agent.knowledge == [Sentence(cells={(0, 1), (1, 0)}, count=1)]
