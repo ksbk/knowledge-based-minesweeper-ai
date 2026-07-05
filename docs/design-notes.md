@@ -8,11 +8,11 @@ The goal is not only to make the agent play Minesweeper. The goal is to make the
 
 The project focuses on:
 
-* symbolic knowledge representation
-* deterministic inference
-* clean separation between reasoning logic and user interface
-* tests that demonstrate the behavior of the AI engine
-* documentation that explains both strengths and limitations
+- symbolic knowledge representation
+- deterministic inference
+- clean separation between reasoning logic and user interface
+- tests that demonstrate the behavior of the AI engine
+- documentation that explains both strengths and limitations
 
 ## Why Minesweeper Is a Good AI Problem
 
@@ -79,10 +79,10 @@ This means one of those cells is a mine.
 
 The sentence should be able to answer:
 
-* Which cells are definitely mines?
-* Which cells are definitely safe?
-* How should the sentence change when a cell is known to be safe?
-* How should the sentence change when a cell is known to be a mine?
+- Which cells are definitely mines?
+- Which cells are definitely safe?
+- How should the sentence change when a cell is known to be safe?
+- How should the sentence change when a cell is known to be a mine?
 
 ## Basic Inference Rules
 
@@ -136,14 +136,14 @@ The remaining cell must contain one mine:
 
 The AI agent is responsible for:
 
-* remembering moves already made
-* remembering cells known to be safe
-* remembering cells known to be mines
-* adding new knowledge after a safe cell is revealed
-* updating old sentences when new safe cells or mines are discovered
-* deriving new sentences through inference
-* choosing a known safe move when possible
-* choosing an uncertain move only when no safe move is known
+- remembering moves already made
+- remembering cells known to be safe
+- remembering cells known to be mines
+- adding new knowledge after a safe cell is revealed
+- updating old sentences when new safe cells or mines are discovered
+- deriving new sentences through inference
+- choosing a known safe move when possible
+- choosing an uncertain move only when no safe move is known
 
 The agent should not be responsible for rendering graphics.
 
@@ -151,12 +151,12 @@ The agent should not be responsible for rendering graphics.
 
 The board model is responsible for:
 
-* storing board dimensions
-* storing mine locations
-* counting nearby mines
-* checking whether a cell is inside the board
-* returning neighboring cells
-* supporting deterministic tests
+- storing board dimensions
+- storing mine locations
+- counting nearby mines
+- checking whether a cell is inside the board
+- returning neighboring cells
+- supporting deterministic tests
 
 The board should support predictable setups for tests instead of relying only on random mine placement.
 
@@ -166,14 +166,14 @@ The tests should make the reasoning behavior auditable.
 
 Important tests include:
 
-* a sentence with count `0` marks all cells safe
-* a sentence where count equals number of cells marks all cells as mines
-* marking a mine removes it from a sentence and reduces the count
-* marking a safe cell removes it from a sentence without reducing the count
-* subset inference derives new knowledge correctly
-* the agent never chooses a known mine as a random move
-* the agent prefers known safe moves over uncertain moves
-* board neighbor counting works on corners, edges, and middle cells
+- a sentence with count `0` marks all cells safe
+- a sentence where count equals number of cells marks all cells as mines
+- marking a mine removes it from a sentence and reduces the count
+- marking a safe cell removes it from a sentence without reducing the count
+- subset inference derives new knowledge correctly
+- the agent never chooses a known mine as a random move
+- the agent prefers known safe moves over uncertain moves
+- board neighbor counting works on corners, edges, and middle cells
 
 ## Design Principle
 
@@ -199,13 +199,13 @@ This limitation is acceptable because the purpose of the project is to demonstra
 
 Possible future improvements include:
 
-* probability-based move selection when deterministic inference is exhausted
-* richer reasoning traces for debugging
-* command-line simulation mode
-* Pygame visual demo
-* benchmark statistics across many random boards
-* improved documentation diagrams
-* CI checks with tests and linting
+- probability-based move selection when deterministic inference is exhausted
+- richer reasoning traces for debugging
+- command-line simulation mode
+- Pygame visual demo
+- benchmark statistics across many random boards
+- improved documentation diagrams
+- CI checks with tests and linting
 
 ## Portfolio Positioning
 
@@ -213,11 +213,11 @@ This project should be presented as a case study in symbolic AI and professional
 
 The portfolio page should focus on:
 
-* the problem
-* the knowledge representation
-* the inference algorithm
-* the testing strategy
-* the limitations
-* what the project demonstrates professionally
+- the problem
+- the knowledge representation
+- the inference algorithm
+- the testing strategy
+- the limitations
+- what the project demonstrates professionally
 
 The project should be honest about its learning origin while showing that it has been rebuilt into an auditable software artifact.
