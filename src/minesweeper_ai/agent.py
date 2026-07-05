@@ -162,3 +162,21 @@ class MinesweeperAgent:
                 self.knowledge.extend(new_sentences)
                 self._remove_deduplicate_knowledge()
                 changed = True
+
+    def make_safe_move(self) -> Cell | None:
+        """Return a safe cell to choose on the Minesweeper board."""
+        available_safes_moves = self.safes - self.moves_made
+
+        if not available_safes_moves:
+            return None
+
+        return next(iter(available_safes_moves))
+
+    def make_random_move(self) -> Cell | None:
+        """Return an available move that is not known to be a mine."""
+        available_moves = self.board.cells() - self.moves_made - self.mines
+
+        if not available_moves:
+            return None
+
+        return next(iter(available_moves))

@@ -41,3 +41,7 @@ class Board:
     def nearby_mines(self, cell: Cell) -> int:
         """Return the number of mines neighboring a cell."""
         return len(self.neighbors(cell) & self.mines)
+
+    def cells(self) -> set[Cell]:
+        """Return the set of all cells on the board."""
+        return {(row, col) for row in range(self.height) for col in range(self.width)}

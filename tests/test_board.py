@@ -62,3 +62,16 @@ def test_nearby_mines_does_not_count_the_cell_itself() -> None:
     board = Board(height=3, width=3, mines={(1, 1)})
 
     assert board.nearby_mines((1, 1)) == 0
+
+
+def test_board_cells_returns_all_cells() -> None:
+    board = Board(height=2, width=3)
+
+    assert board.cells() == {
+        (0, 0),
+        (0, 1),
+        (0, 2),
+        (1, 0),
+        (1, 1),
+        (1, 2),
+    }

@@ -264,3 +264,51 @@ def test_add_knowledge_applies_subset_inference() -> None:
     assert agent.safes == {(0, 0), (1, 1)}
     assert agent.mines == set()
     assert agent.knowledge == [Sentence(cells={(0, 1), (1, 0)}, count=1)]
+
+
+def test_make_safe_move_returns_known_safe_move_not_already_made() -> None:
+    agent = MinesweeperAgent(
+        board=Board(height=3, width=3),
+        safes={(0, 0), (0, 1)},
+        moves_made={(0, 0)},
+    )
+
+    assert agent.make_safe_move() == (0, 1)
+
+
+def test_make_safe_move_returns_none_when_no_safe_move_is_available() -> None:
+    agent = MinesweeperAgent(
+        board=Board(height=3, width=3),
+        safes={(0, 0)},
+        moves_made={(0, 0)},
+    )
+
+    assert agent.make_safe_move() is None
+
+
+def test_make_random_move_excludes_known_mines() -> None:
+    agent = MinesweeperAgent(
+        board=Board(height=1, width=2),
+        mines={(0, 0)},
+    )
+
+    assert agent.make_random_move() == (0, 1)
+
+
+def test_make_random_move_excludes_moves_already_made() -> None:
+    agent = MinesweeperAgent(
+        board=Board(height=1, width=2),
+        moves_made={(0, 0)},
+    )
+
+    assert agent.make_random_move() == (0, 1)
+
+
+def test_make_random_move_returns_none_when_no_moves_are_available() -> None:
+    agent = MinesweeperAgent(
+        board=Board(height=1, width=2),
+        moves_made={(0, 0)},
+        mines={(0, 1)},
+    )
+
+    assert agent.make_random_move() is None
