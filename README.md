@@ -16,12 +16,12 @@ Implemented:
 - subset-based inference
 - safe and random move selection
 - reasoning trace example
+- command-line simulation mode
 - unit tests for sentence, board, and agent behavior
 - development commands through `make`
 
 Planned:
 
-- command-line simulation mode
 - optional visual demo
 - richer reasoning traces
 - benchmark statistics across multiple boards
@@ -95,6 +95,26 @@ Next safe move:
   (1, 1)
 ```
 
+## Command-Line Simulation
+
+Run:
+
+```bash
+make simulate
+```
+
+This runs a small board through the agent loop.
+
+The simulation demonstrates the full engine flow:
+
+- choose a known safe move when available
+- choose an uncertain legal move when no safe move is known
+- reveal nearby mine counts
+- update the knowledge base
+- infer new safe cells and mines where possible
+
+Because the agent uses deterministic inference rather than probability, it may hit a mine when no safe move can be inferred.
+
 ## Project Structure
 
 ```text
@@ -111,6 +131,7 @@ tests/
 
 examples/
   reasoning_trace.py
+  simulate_game.py
 ```
 
 ## Design Direction
