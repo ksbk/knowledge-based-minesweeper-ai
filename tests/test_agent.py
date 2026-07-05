@@ -83,9 +83,7 @@ def test_add_knowledge_adds_sentence_for_unknown_neighbors() -> None:
 
     agent.add_knowledge((0, 0), count=1)
 
-    assert agent.knowledge == [
-        Sentence(cells={(0, 1), (1, 0), (1, 1)}, count=1)
-    ]
+    assert agent.knowledge == [Sentence(cells={(0, 1), (1, 0), (1, 1)}, count=1)]
 
 
 def test_add_knowledge_excludes_known_safe_neighbors() -> None:
@@ -96,9 +94,7 @@ def test_add_knowledge_excludes_known_safe_neighbors() -> None:
 
     agent.add_knowledge((0, 0), count=1)
 
-    assert agent.knowledge == [
-        Sentence(cells={(1, 0), (1, 1)}, count=1)
-    ]
+    assert agent.knowledge == [Sentence(cells={(1, 0), (1, 1)}, count=1)]
 
 
 def test_add_knowledge_excludes_known_mine_neighbors_and_adjusts_count() -> None:
@@ -109,9 +105,9 @@ def test_add_knowledge_excludes_known_mine_neighbors_and_adjusts_count() -> None
 
     agent.add_knowledge((0, 0), count=1)
 
-    assert agent.knowledge == [
-        Sentence(cells={(1, 0), (1, 1)}, count=0)
-    ]
+    assert agent.safes == {(0, 0), (1, 0), (1, 1)}
+    assert agent.mines == {(0, 1)}
+    assert agent.knowledge == []
 
 
 def test_add_knowledge_excludes_known_safes_and_mines_together() -> None:
@@ -123,9 +119,9 @@ def test_add_knowledge_excludes_known_safes_and_mines_together() -> None:
 
     agent.add_knowledge((0, 0), count=1)
 
-    assert agent.knowledge == [
-        Sentence(cells={(1, 1)}, count=0)
-    ]
+    assert agent.safes == {(0, 0), (0, 1), (1, 1)}
+    assert agent.mines == {(1, 0)}
+    assert agent.knowledge == []
 
 
 def test_add_knowledge_does_not_add_sentence_when_no_unknown_neighbors_remain() -> None:
@@ -136,6 +132,7 @@ def test_add_knowledge_does_not_add_sentence_when_no_unknown_neighbors_remain() 
 
     agent.add_knowledge((0, 0), count=0)
 
+    assert agent.safes == {(0, 0), (0, 1), (1, 0), (1, 1)}
     assert agent.knowledge == []
 
 
@@ -149,4 +146,75 @@ def test_add_knowledge_updates_existing_sentences_with_safe_cell() -> None:
 
     agent.add_knowledge((0, 0), count=1)
 
-    assert agent.knowledge[0] == Sentence(cells={(0, 1)}, count=1)
+    assert agent.safes == {(0, 0), (1, 0), (1, 1)}
+    assert agent.mines == {(0, 1)}
+    assert agent.knowledge == []
+
+
+def test_add_knowledge_marks_all_neighbors_safe_when_count_is_zero() -> None:
+    agent = MinesweeperAgent(board=Board(height=3, width=3))
+
+    agent.add_knowledge((0, 0), count=0)
+
+    assert agent.safes == {(0, 0), (0, 1), (1, 0), (1, 1)}
+    assert agent.mines == set()
+    assert agent.knowledge == []
+
+
+def test_add_knowledge_marks_all_unknown_neighbors_as_mines() -> None:
+    agent = MinesweeperAgent(board=Board(height=3, width=3))
+
+    agent.add_knowledge((0, 0), count=3)
+
+    assert agent.mines == {(0, 1), (1, 0), (1, 1)}
+    assert agent.safes == {(0, 0)}
+    assert agent.knowledge == []
+
+
+def test_direct_inference_does_not_apply_subset_reasoning_yet() -> None:
+    agent = MinesweeperAgent(
+        board=Board(height=3, width=3),
+        knowledge=[
+            Sentence(cells={(0, 1), (1, 0)}, count=1),
+        ],
+    )
+
+    agent.add_knowledge((0, 0), count=1)
+
+    assert agent.mines == set()
+    assert agent.safes == {(0, 0)}
+    assert agent.knowledge == [
+        Sentence(cells={(0, 1), (1, 0)}, count=1),
+        Sentence(cells={(0, 1), (1, 0), (1, 1)}, count=1),
+    ]
+
+
+def test_update_known_cells_propagates_safe_cell_to_other_sentences() -> None:
+    agent = MinesweeperAgent(
+        board=Board(height=3, width=3),
+        knowledge=[
+            Sentence(cells={(0, 1)}, count=0),
+            Sentence(cells={(0, 1), (1, 0)}, count=1),
+        ],
+    )
+
+    agent._update_known_cells()
+
+    assert agent.safes == {(0, 1)}
+    assert agent.mines == {(1, 0)}
+    assert agent.knowledge == []
+
+
+def test_update_known_cells_propagates_mine_to_other_sentences() -> None:
+    agent = MinesweeperAgent(
+        board=Board(height=3, width=3),
+        knowledge=[
+            Sentence(cells={(0, 1)}, count=1),
+            Sentence(cells={(0, 1), (1, 0)}, count=1),
+        ],
+    )
+
+    agent._update_known_cells()
+
+    assert agent.mines == {(0, 1)}
+    assert agent.knowledge == []
