@@ -11,7 +11,7 @@ directly.
 
 ## Current Status
 
-Version 1.0.0 includes:
+Version 1.1.0 includes:
 
 - a tested Python engine with direct and subset-based logical inference
 - an interface-independent `GameSession`
@@ -42,11 +42,11 @@ open ui/web/index.html
 The web demo has no runtime dependencies. Its gameplay state and Helper logic
 run in browser-side JavaScript.
 
-### Python-Backed API Prototype
+### Python-Backed Browser Client
 
-The local API prototype is a separate mode backed by the Python `GameSession`
-and `MinesweeperAgent`. It uses only the Python standard library and does not
-modify or replace the static browser demo.
+The Python-backed client is a separate browser experience backed by the Python
+`GameSession` and `MinesweeperAgent`. It uses only the Python standard library
+and does not modify or replace the static browser demo.
 
 Start the server:
 
@@ -54,7 +54,18 @@ Start the server:
 uv run python examples/web_server.py
 ```
 
-Then inspect the current game or send a player action from another terminal:
+Then open:
+
+```text
+http://127.0.0.1:8000/client/
+```
+
+The client displays Python game state and reasoning output. Reveals, flags, new
+games, AI suggestions, and Helper moves all flow through the local JSON API.
+Unlike the standalone demo, `ui/api/index.html` requires the server and should
+be opened through the `/client/` URL.
+
+The API remains available directly for inspection:
 
 ```bash
 curl http://127.0.0.1:8000/api/game
@@ -65,10 +76,8 @@ curl -X POST \
   http://127.0.0.1:8000/api/game/reveal
 ```
 
-The prototype also supports starting a new game, toggling flags, requesting an
-AI suggestion, and applying a Helper move. It is currently a JSON API rather
-than a second graphical client; `ui/web/index.html` remains the standalone
-browser-side experience.
+`ui/web/index.html` remains the independent browser-side experience and does
+not require the Python server.
 
 ## Development
 
@@ -184,6 +193,11 @@ ui/web/
   index.html    Static gameplay demo
   app.js        Browser-side game state and interactions
   styles.css    Web UI presentation
+
+ui/api/
+  index.html    Python-backed browser client
+  app.js        JSON API interactions and rendering
+  styles.css    API client presentation
 ```
 
 ## Design Direction
