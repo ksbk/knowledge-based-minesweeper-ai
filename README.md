@@ -11,13 +11,14 @@ directly.
 
 ## Current Status
 
-Version 1.1.0 includes:
+Version 1.2.0 includes:
 
 - a tested Python engine with direct and subset-based logical inference
 - an interface-independent `GameSession`
 - structured reasoning trace output
 - command-line examples and simulation
 - a configurable static web gameplay demo
+- a Python-backed browser client served by a local API
 - development and validation commands through `make`
 
 ## Web Modes
