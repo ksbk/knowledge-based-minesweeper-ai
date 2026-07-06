@@ -4,6 +4,7 @@ const restartButton = document.querySelector("#restart-button");
 const helperButton = document.querySelector("#helper-button");
 const difficultyElement = document.querySelector("#difficulty");
 const revealStyleElement = document.querySelector("#reveal-style");
+const helperVisibilityElement = document.querySelector("#helper-visibility");
 const knownSafesElement = document.querySelector("#known-safes");
 const knownMinesElement = document.querySelector("#known-mines");
 const suggestedMoveElement = document.querySelector("#suggested-move");
@@ -34,7 +35,11 @@ function parseCellKey(key) {
   return key.split(",").map((value) => Number.parseInt(value, 10));
 }
 
-function createGame(difficulty = "easy", revealStyle = "classic") {
+function createGame(
+  difficulty = "easy",
+  revealStyle = "classic",
+  helperVisibility = "available",
+) {
   const { height, width, mineCount } = difficulties[difficulty];
   const mines = new Set();
 
@@ -54,6 +59,7 @@ function createGame(difficulty = "easy", revealStyle = "classic") {
     flags: new Set(),
     lost: false,
     revealStyle,
+    helperVisibility,
     trace: ["New game started. Click to reveal. Right-click to flag."],
   };
 }
@@ -261,7 +267,7 @@ function findExploratoryMove() {
 }
 
 function makeHelperMove() {
-  if (isGameOver()) {
+  if (game.helperVisibility === "hidden" || isGameOver()) {
     return;
   }
 
@@ -392,6 +398,9 @@ function renderTrace() {
 }
 
 function render() {
+  const helperIsHidden = game.helperVisibility === "hidden";
+  helperButton.hidden = helperIsHidden;
+  helperButton.disabled = helperIsHidden;
   renderBoard();
   renderStatus();
   renderKnowledgePanel();
@@ -402,7 +411,7 @@ difficultyElement.addEventListener("change", () => {
   const difficulty = difficultyElement.value;
   const { label, height, width, mineCount } = difficulties[difficulty];
 
-  game = createGame(difficulty, game.revealStyle);
+  game = createGame(difficulty, game.revealStyle, game.helperVisibility);
   game.trace.unshift(
     `Difficulty changed to ${label}: ${height}x${width} board with ${mineCount} mines.`,
   );
@@ -417,10 +426,22 @@ revealStyleElement.addEventListener("change", () => {
   render();
 });
 
+helperVisibilityElement.addEventListener("change", () => {
+  game.helperVisibility = helperVisibilityElement.value;
+  game.trace.unshift(
+    `Helper changed to ${helperVisibilityElement.selectedOptions[0].textContent}.`,
+  );
+  render();
+});
+
 helperButton.addEventListener("click", makeHelperMove);
 
 restartButton.addEventListener("click", () => {
-  game = createGame(game.difficulty, game.revealStyle);
+  game = createGame(
+    game.difficulty,
+    game.revealStyle,
+    game.helperVisibility,
+  );
   render();
 });
 
