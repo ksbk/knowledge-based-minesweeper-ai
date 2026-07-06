@@ -58,11 +58,15 @@ src/minesweeper_ai/
   sentence.py   Logical sentence representation
   agent.py      Knowledge-based AI agent
   board.py      Minesweeper board model
+  session.py    Interface-independent game session
+  trace.py      Structured reasoning trace events
+  web_adapter.py
+                Serializable adapter for Python-backed web actions
 ```
 
-The reasoning engine should not depend on Pygame or any graphical interface.
+The reasoning engine should not depend on any graphical interface or web framework.
 
-A graphical demo can be added later, but the core AI must be testable from the command line.
+A browser or graphical demo can be added on top, but the core AI must be testable from the command line.
 
 ## Sentence Model
 
@@ -185,7 +189,7 @@ Make the AI reasoning inspectable before making the game visually impressive.
 
 The professional value of this project comes from the clarity of the reasoning engine, tests, and documentation.
 
-The Pygame interface is optional. The AI engine is the main artifact.
+The web demo is optional. The AI engine is the main artifact.
 
 ## Limitations
 
@@ -200,12 +204,8 @@ This limitation is acceptable because the purpose of the project is to demonstra
 Possible future improvements include:
 
 - probability-based move selection when deterministic inference is exhausted
-- richer reasoning traces for debugging
-- command-line simulation mode
-- Pygame visual demo
 - benchmark statistics across many random boards
 - improved documentation diagrams
-- CI checks with tests and linting
 
 ## Portfolio Positioning
 
