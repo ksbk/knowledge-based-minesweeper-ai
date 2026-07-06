@@ -1,30 +1,45 @@
 # Knowledge-Based Minesweeper AI
 
-A professional Python implementation of a knowledge-based Minesweeper agent.
+A portfolio-ready implementation of Minesweeper built around a tested Python
+symbolic AI engine, an interface-independent game session, and a dependency-free
+static web demo.
 
-The project focuses on symbolic knowledge representation, deterministic inference, and testable software design. The core AI engine is kept separate from any graphical interface so the reasoning logic can be audited directly.
+The project focuses on symbolic knowledge representation, deterministic
+inference, structured reasoning traces, and testable software design. The core
+AI engine remains separate from user interfaces so its reasoning can be audited
+directly.
 
 ## Current Status
 
-Implemented:
+Version 1.0.0 includes:
 
-- logical `Sentence` model
-- deterministic `Board` model
-- agent knowledge state
-- knowledge-base updates from revealed cells
-- direct inference for known safe cells and mines
-- subset-based inference
-- safe and random move selection
-- reasoning trace example
-- command-line simulation mode
-- unit tests for sentence, board, and agent behavior
-- development commands through `make`
+- a tested Python engine with direct and subset-based logical inference
+- an interface-independent `GameSession`
+- structured reasoning trace output
+- command-line examples and simulation
+- a configurable static web gameplay demo
+- development and validation commands through `make`
 
-Planned:
+## Web Gameplay Demo
 
-- optional visual demo
-- richer reasoning traces
-- benchmark statistics across multiple boards
+The static web UI supports reveal, flag, restart, win/loss status, a session
+trace, and configurable gameplay:
+
+| Setting | Options | Behavior |
+| --- | --- | --- |
+| Difficulty | Easy, Intermediate, Hard | Uses 8x8 with 8 mines, 10x10 with 15 mines, or 12x12 with 25 mines. |
+| Reveal style | Classic, Tactical | Classic expands connected empty safe areas; Tactical reveals only the selected cell. |
+| Helper | Available, Hidden | Shows or hides the browser-side Helper move control. |
+
+Open [`ui/web/index.html`](ui/web/index.html) directly in a browser. On macOS:
+
+```bash
+open ui/web/index.html
+```
+
+The web demo has no runtime dependencies. Its gameplay state and Helper logic
+currently run in browser-side JavaScript; the tested Python AI engine is not yet
+executed inside the browser.
 
 ## Development
 
@@ -123,15 +138,20 @@ src/minesweeper_ai/
   sentence.py   Logical sentence representation
   board.py      Board model and neighboring-cell logic
   agent.py      Knowledge-based AI agent
+  session.py    Interface-independent game session
+  trace.py      Structured reasoning trace events
 
 tests/
-  test_sentence.py
-  test_board.py
-  test_agent.py
+  ...           Unit tests for the engine, session, and traces
 
 examples/
   reasoning_trace.py
   simulate_game.py
+
+ui/web/
+  index.html    Static gameplay demo
+  app.js        Browser-side game state and interactions
+  styles.css    Web UI presentation
 ```
 
 ## Design Direction
