@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Python-Backed Minesweeper AI</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <main class="app">
+      <section class="hero" aria-labelledby="page-title">
+        <p class="eyebrow">Python-backed integration</p>
+        <h1 id="page-title">Knowledge-Based Minesweeper AI</h1>
+        <p class="hero__lead">
+          Player actions on this page flow through the local Python
+          <code>GameSession</code> and <code>MinesweeperAgent</code>.
+        </p>
+        <p class="server-note">
+          Requires
+          <code>uv run python examples/web_server.py</code>
+        </p>
+      </section>
+
+      <section class="game" aria-labelledby="game-title">
+        <div class="game__header">
+          <div>
+            <p class="eyebrow">API-backed gameplay</p>
+            <h2 id="game-title">Python game session</h2>
+          </div>
+
+          <div class="game__actions">
+            <label class="game-setting" for="difficulty">
+              <span>Difficulty</span>
+              <select id="difficulty">
+                <option value="easy">Easy</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="hard">Hard</option>
+              </select>
+            </label>
+
+            <button class="button button--secondary" type="button" id="suggest-button">
+              Suggest move
+            </button>
+
+            <button class="button" type="button" id="helper-button">
+              Helper move
+            </button>
+
+            <button class="button" type="button" id="new-game-button">
+              New game
+            </button>
+          </div>
+        </div>
+
+        <p
+          class="connection"
+          id="connection-message"
+          role="status"
+          aria-live="polite"
+        >
+          Connecting to the Python API…
+        </p>
+
+        <p class="status" id="status">Waiting for game state.</p>
+
+        <div class="board" id="board" aria-label="Minesweeper board"></div>
+      </section>
+
+      <aside class="panel" aria-labelledby="state-title">
+        <p class="eyebrow">Python AI state</p>
+        <h2 id="state-title">Session knowledge</h2>
+
+        <dl class="facts">
+          <div class="fact">
+            <dt>Known safe cells</dt>
+            <dd id="known-safes">None yet</dd>
+          </div>
+
+          <div class="fact">
+            <dt>Known mines</dt>
+            <dd id="known-mines">None yet</dd>
+          </div>
+
+          <div class="fact">
+            <dt>Suggested move</dt>
+            <dd id="suggested-move">Not requested yet</dd>
+          </div>
+
+          <div class="fact">
+            <dt>Last Helper move</dt>
+            <dd id="helper-move">None yet</dd>
+          </div>
+        </dl>
+
+        <div class="trace">
+          <h3>Reasoning trace</h3>
+          <ol id="trace-list">
+            <li>No reasoning events yet.</li>
+          </ol>
+        </div>
+      </aside>
+    </main>
+  </body>
+</html>
