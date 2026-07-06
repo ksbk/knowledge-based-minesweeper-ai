@@ -71,7 +71,10 @@ class MinesweeperRequestHandler(BaseHTTPRequestHandler):
         try:
             if path == "/api/game":
                 payload = self._read_json()
-                state = self.adapter.new_game(payload.get("difficulty", "beginner"))
+                state = self.adapter.new_game(
+                    payload.get("difficulty", "beginner"),
+                    payload.get("reveal_style", "classic"),
+                )
                 self._write_json(state, HTTPStatus.CREATED)
                 return
 
