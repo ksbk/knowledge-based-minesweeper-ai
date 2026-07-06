@@ -33,6 +33,20 @@ def print_session_state(session: GameSession) -> None:
             print(f"  {format_cells(sentence.cells)} = {sentence.count}")
 
 
+def print_recent_trace(session: GameSession, previous_trace_length: int) -> int:
+    """Print trace events added since the previous step."""
+    new_events = session.agent.trace[previous_trace_length:]
+
+    print("Trace:")
+    if not new_events:
+        print("  <no new reasoning events>")
+    else:
+        for event in new_events:
+            print(f"  - {event.message}")
+
+    return len(session.agent.trace)
+
+
 def move_type(session: GameSession, move: Cell) -> str:
     """Return whether a move was known safe or uncertain."""
     if move in session.agent.safes - session.agent.moves_made:
@@ -54,7 +68,7 @@ def run_simulation() -> None:
     print()
 
     step = 1
-
+    previous_trace_length = 0
     while True:
         move = session.suggest_ai_move()
 
@@ -78,6 +92,7 @@ def run_simulation() -> None:
         session.reveal_cell(move)
         print(f"Result: safe cell with {nearby_count} nearby mine(s).")
         print_session_state(session)
+        previous_trace_length = print_recent_trace(session, previous_trace_length)
         print()
 
         if session.revealed | session.agent.mines == board.cells():

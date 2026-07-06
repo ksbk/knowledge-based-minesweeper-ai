@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 
 from minesweeper_ai.board import Board
 from minesweeper_ai.sentence import Sentence
+from minesweeper_ai.trace import TraceEvent, TraceEventKind
 from minesweeper_ai.types import Cell
 
 
@@ -17,6 +18,16 @@ def _empty_knowledge_base() -> list[Sentence]:
     return []
 
 
+def _empty_trace() -> list[TraceEvent]:
+    """Return a new empty reasoning trace."""
+    return []
+
+
+def _copy_sentence(sentence: Sentence) -> Sentence:
+    """Return a copy of a sentence for trace snapshots."""
+    return Sentence(cells=set(sentence.cells), count=sentence.count)
+
+
 @dataclass
 class MinesweeperAgent:
     """AI agent that tracks Minesweeper knowledge."""
@@ -26,18 +37,41 @@ class MinesweeperAgent:
     safes: set[Cell] = field(default_factory=_empty_cell_set)
     mines: set[Cell] = field(default_factory=_empty_cell_set)
     knowledge: list[Sentence] = field(default_factory=_empty_knowledge_base)
+    trace: list[TraceEvent] = field(default_factory=_empty_trace)
 
     def mark_safe(self, cell: Cell) -> None:
-        """Mark a cell as safe and update knowledge."""
+        """Mark a cell as safe and update all existing knowledge."""
+        already_known = cell in self.safes
+
         self.safes.add(cell)
         for sentence in self.knowledge:
             sentence.mark_safe(cell)
 
+        if not already_known:
+            self.trace.append(
+                TraceEvent(
+                    kind=TraceEventKind.MARK_SAFE,
+                    message=f"Marked {cell} as safe.",
+                    cells=frozenset({cell}),
+                )
+            )
+
     def mark_mine(self, cell: Cell) -> None:
-        """Mark a cell as a mine and update knowledge."""
+        """Mark a cell as a mine and update all existing knowledge."""
+        already_known = cell in self.mines
+
         self.mines.add(cell)
         for sentence in self.knowledge:
             sentence.mark_mine(cell)
+
+        if not already_known:
+            self.trace.append(
+                TraceEvent(
+                    kind=TraceEventKind.MARK_MINE,
+                    message=f"Marked {cell} as a mine.",
+                    cells=frozenset({cell}),
+                )
+            )
 
     def add_knowledge(self, cell: Cell, count: int) -> None:
         """Add knowledge from a revealed safe cell."""
@@ -60,36 +94,17 @@ class MinesweeperAgent:
         if unknown_neighbors:
             new_sentence = Sentence(cells=unknown_neighbors, count=adjusted_count)
             self.knowledge.append(new_sentence)
+            self.trace.append(
+                TraceEvent(
+                    kind=TraceEventKind.INFER_SENTENCE,
+                    message="Derived a new sentence from revealed cell.",
+                    sentence=_copy_sentence(new_sentence),
+                )
+            )
 
         self.update_knowledge()
 
-    def _update_known_cells(self) -> None:
-        """Infer known safe cells and mines from current knowledge."""
-        changed = True
-
-        while changed:
-            changed = False
-
-            known_safes: set[Cell] = set()
-            known_mines: set[Cell] = set()
-
-            for sentence in self.knowledge:
-                known_safes.update(sentence.known_safes())
-                known_mines.update(sentence.known_mines())
-
-            for cell in known_safes - self.safes:
-                self.mark_safe(cell)
-                changed = True
-
-            for cell in known_mines - self.mines:
-                self.mark_mine(cell)
-                changed = True
-
-            self.knowledge = [
-                sentence for sentence in self.knowledge if not sentence.is_empty()
-            ]
-
-    def _remove_deduplicate_knowledge(self) -> None:
+    def _deduplicate_knowledge(self) -> None:
         """Remove duplicate sentences from the knowledge base."""
         unique: list[Sentence] = []
 
@@ -121,6 +136,15 @@ class MinesweeperAgent:
                         and new_sentence not in inferred_knowledge
                     ):
                         inferred_knowledge.append(new_sentence)
+                        self.trace.append(
+                            TraceEvent(
+                                kind=TraceEventKind.INFER_SENTENCE,
+                                message="Derived a new sentence from subset inference.",
+                                sentence=_copy_sentence(new_sentence),
+                                source_sentence=_copy_sentence(first),
+                                other_sentence=_copy_sentence(second),
+                            )
+                        )
 
         return inferred_knowledge
 
@@ -152,7 +176,7 @@ class MinesweeperAgent:
                 sentence for sentence in self.knowledge if not sentence.is_empty()
             ]
 
-            self._remove_deduplicate_knowledge()
+            self._deduplicate_knowledge()
 
             if self.knowledge != before_cleanup:
                 changed = True
@@ -160,17 +184,17 @@ class MinesweeperAgent:
             new_sentences = self._infer_new_sentences()
             if new_sentences:
                 self.knowledge.extend(new_sentences)
-                self._remove_deduplicate_knowledge()
+                self._deduplicate_knowledge()
                 changed = True
 
     def make_safe_move(self) -> Cell | None:
         """Return a safe cell to choose on the Minesweeper board."""
-        available_safes_moves = self.safes - self.moves_made
+        available_safe_moves = self.safes - self.moves_made
 
-        if not available_safes_moves:
+        if not available_safe_moves:
             return None
 
-        return next(iter(available_safes_moves))
+        return next(iter(available_safe_moves))
 
     def make_random_move(self) -> Cell | None:
         """Return an available move that is not known to be a mine."""
