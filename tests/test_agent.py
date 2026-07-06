@@ -3,6 +3,7 @@
 from minesweeper_ai.agent import MinesweeperAgent
 from minesweeper_ai.board import Board
 from minesweeper_ai.sentence import Sentence
+from minesweeper_ai.trace import TraceEventKind
 
 
 def test_agent_starts_with_empty_knowledge_state() -> None:
@@ -312,3 +313,40 @@ def test_make_random_move_returns_none_when_no_moves_are_available() -> None:
     )
 
     assert agent.make_random_move() is None
+
+
+def test_mark_safe_records_trace_event() -> None:
+    board = Board(height=2, width=2)
+    agent = MinesweeperAgent(board=board)
+
+    agent.mark_safe((0, 0))
+
+    assert agent.trace[-1].kind == TraceEventKind.MARK_SAFE
+    assert agent.trace[-1].cells == frozenset({(0, 0)})
+
+
+def test_mark_mine_records_trace_event() -> None:
+    board = Board(height=2, width=2)
+    agent = MinesweeperAgent(board=board)
+
+    agent.mark_mine((0, 0))
+
+    assert agent.trace[-1].kind == TraceEventKind.MARK_MINE
+    assert agent.trace[-1].cells == frozenset({(0, 0)})
+
+
+def test_subset_inference_records_trace_event() -> None:
+    board = Board(height=3, width=3)
+    agent = MinesweeperAgent(board=board)
+    agent.knowledge = [
+        Sentence(cells={(0, 1), (1, 0)}, count=1),
+        Sentence(cells={(0, 1), (1, 0), (1, 1)}, count=1),
+    ]
+
+    agent.update_knowledge()
+
+    assert any(
+        event.kind == TraceEventKind.INFER_SENTENCE
+        and event.sentence == Sentence(cells={(1, 1)}, count=0)
+        for event in agent.trace
+    )
