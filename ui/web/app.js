@@ -1,6 +1,7 @@
 const boardElement = document.querySelector("#board");
 const statusElement = document.querySelector("#status");
 const restartButton = document.querySelector("#restart-button");
+const helperButton = document.querySelector("#helper-button");
 const knownSafesElement = document.querySelector("#known-safes");
 const knownMinesElement = document.querySelector("#known-mines");
 const suggestedMoveElement = document.querySelector("#suggested-move");
@@ -190,6 +191,79 @@ function suspectedMineCells() {
   return new Set(game.flags);
 }
 
+function availableMoves() {
+  const moves = [];
+
+  for (let row = 0; row < height; row += 1) {
+    for (let col = 0; col < width; col += 1) {
+      const key = cellKey(row, col);
+
+      if (!game.revealed.has(key) && !game.flags.has(key)) {
+        moves.push([row, col]);
+      }
+    }
+  }
+
+  return moves;
+}
+
+function findSafeStyleMove() {
+  for (const key of game.revealed) {
+    const [row, col] = parseCellKey(key);
+
+    if (nearbyMineCount(row, col) !== 0) {
+      continue;
+    }
+
+    for (const [neighborRow, neighborCol] of neighbors(row, col)) {
+      const neighborKey = cellKey(neighborRow, neighborCol);
+
+      if (!game.revealed.has(neighborKey) && !game.flags.has(neighborKey)) {
+        return [neighborRow, neighborCol];
+      }
+    }
+  }
+
+  return null;
+}
+
+function findExploratoryMove() {
+  const moves = availableMoves();
+
+  if (moves.length === 0) {
+    return null;
+  }
+
+  return moves[Math.floor(Math.random() * moves.length)];
+}
+
+function makeHelperMove() {
+  if (isGameOver()) {
+    return;
+  }
+
+  const safeStyleMove = findSafeStyleMove();
+
+  if (safeStyleMove !== null) {
+    const [row, col] = safeStyleMove;
+    game.trace.unshift(`Helper selected safe-style move ${cellLabel(row, col)}.`);
+    revealCell(row, col);
+    return;
+  }
+
+  const exploratoryMove = findExploratoryMove();
+
+  if (exploratoryMove === null) {
+    game.trace.unshift("Helper found no available moves.");
+    render();
+    return;
+  }
+
+  const [row, col] = exploratoryMove;
+  game.trace.unshift(`Helper selected exploratory move ${cellLabel(row, col)}.`);
+  revealCell(row, col);
+}
+
 function suggestedMove() {
   if (isGameOver()) {
     return "Restart to play again.";
@@ -299,6 +373,8 @@ function render() {
   renderKnowledgePanel();
   renderTrace();
 }
+
+helperButton.addEventListener("click", makeHelperMove);
 
 restartButton.addEventListener("click", () => {
   game = createGame();

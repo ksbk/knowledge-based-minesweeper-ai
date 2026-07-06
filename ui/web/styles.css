@@ -217,3 +217,10 @@ dd {
   background: rgb(15 118 110 / 0.12);
   border-color: var(--color-accent);
 }
+
+.game__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
