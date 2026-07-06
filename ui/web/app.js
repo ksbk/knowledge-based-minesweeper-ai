@@ -2,6 +2,7 @@ const boardElement = document.querySelector("#board");
 const statusElement = document.querySelector("#status");
 const restartButton = document.querySelector("#restart-button");
 const helperButton = document.querySelector("#helper-button");
+const revealStyleElement = document.querySelector("#reveal-style");
 const knownSafesElement = document.querySelector("#known-safes");
 const knownMinesElement = document.querySelector("#known-mines");
 const suggestedMoveElement = document.querySelector("#suggested-move");
@@ -25,7 +26,7 @@ function parseCellKey(key) {
   return key.split(",").map((value) => Number.parseInt(value, 10));
 }
 
-function createGame() {
+function createGame(revealStyle = "classic") {
   const mines = new Set();
 
   while (mines.size < mineCount) {
@@ -39,6 +40,7 @@ function createGame() {
     revealed: new Set(),
     flags: new Set(),
     lost: false,
+    revealStyle,
     trace: ["New game started. Click to reveal. Right-click to flag."],
   };
 }
@@ -115,12 +117,20 @@ function revealCell(row, col) {
   game.revealed.add(key);
 
   const count = nearbyMineCount(row, col);
-  game.trace.unshift(
-    `Safe cell ${cellLabel(row, col)} revealed with ${count} nearby mine(s).`,
-  );
 
-  if (count === 0) {
+  if (count === 0 && game.revealStyle === "classic") {
     revealEmptyNeighbors(row, col);
+    game.trace.unshift(
+      `Safe cell ${cellLabel(row, col)} revealed with 0 nearby mines. Classic reveal auto-expanded the empty area.`,
+    );
+  } else if (count === 0) {
+    game.trace.unshift(
+      `Safe cell ${cellLabel(row, col)} revealed with 0 nearby mines. Tactical reveal opened only the selected cell.`,
+    );
+  } else {
+    game.trace.unshift(
+      `Safe cell ${cellLabel(row, col)} revealed with ${count} nearby mine(s).`,
+    );
   }
 
   render();
@@ -374,10 +384,18 @@ function render() {
   renderTrace();
 }
 
+revealStyleElement.addEventListener("change", () => {
+  game.revealStyle = revealStyleElement.value;
+  game.trace.unshift(
+    `Reveal style changed to ${revealStyleElement.selectedOptions[0].textContent}.`,
+  );
+  render();
+});
+
 helperButton.addEventListener("click", makeHelperMove);
 
 restartButton.addEventListener("click", () => {
-  game = createGame();
+  game = createGame(game.revealStyle);
   render();
 });
 
