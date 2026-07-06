@@ -10,6 +10,7 @@ from minesweeper_ai.session import GameSession
 from minesweeper_ai.types import Cell
 
 DIFFICULTIES = {
+    "beginner": {"height": 5, "width": 5, "mine_count": 3},
     "easy": {"height": 8, "width": 8, "mine_count": 8},
     "intermediate": {"height": 10, "width": 10, "mine_count": 15},
     "hard": {"height": 12, "width": 12, "mine_count": 25},
@@ -27,11 +28,11 @@ class WebGameAdapter:
 
     def __init__(self, rng: random.Random | None = None) -> None:
         self._rng = rng or random.Random()
-        self.difficulty = "easy"
+        self.difficulty = "beginner"
         self.session: GameSession
         self.new_game()
 
-    def new_game(self, difficulty: str = "easy") -> dict[str, object]:
+    def new_game(self, difficulty: str = "beginner") -> dict[str, object]:
         """Start and return a new game for the selected difficulty."""
         if difficulty not in DIFFICULTIES:
             choices = ", ".join(DIFFICULTIES)

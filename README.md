@@ -30,7 +30,7 @@ trace, and configurable gameplay:
 
 | Setting | Options | Behavior |
 | --- | --- | --- |
-| Difficulty | Easy, Intermediate, Hard | Uses 8x8 with 8 mines, 10x10 with 15 mines, or 12x12 with 25 mines. |
+| Difficulty | Beginner, Easy, Intermediate, Hard | Uses 5x5 with 3 mines, 8x8 with 8 mines, 10x10 with 15 mines, or 12x12 with 25 mines. |
 | Reveal style | Classic, Tactical | Classic expands connected empty safe areas; Tactical reveals only the selected cell. |
 | Helper | Available, Hidden | Shows or hides the browser-side Helper move control. |
 

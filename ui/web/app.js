@@ -11,6 +11,7 @@ const suggestedMoveElement = document.querySelector("#suggested-move");
 const traceListElement = document.querySelector("#trace-list");
 
 const difficulties = {
+  beginner: { label: "Beginner", height: 5, width: 5, mineCount: 3 },
   easy: { label: "Easy", height: 8, width: 8, mineCount: 8 },
   intermediate: {
     label: "Intermediate",
@@ -36,7 +37,7 @@ function parseCellKey(key) {
 }
 
 function createGame(
-  difficulty = "easy",
+  difficulty = "beginner",
   revealStyle = "classic",
   helperVisibility = "available",
 ) {
