@@ -20,7 +20,9 @@ Version 1.0.0 includes:
 - a configurable static web gameplay demo
 - development and validation commands through `make`
 
-## Web Gameplay Demo
+## Web Modes
+
+### Static Browser-Only Demo
 
 The static web UI supports reveal, flag, restart, win/loss status, a session
 trace, and configurable gameplay:
@@ -38,8 +40,35 @@ open ui/web/index.html
 ```
 
 The web demo has no runtime dependencies. Its gameplay state and Helper logic
-currently run in browser-side JavaScript; the tested Python AI engine is not yet
-executed inside the browser.
+run in browser-side JavaScript.
+
+### Python-Backed API Prototype
+
+The local API prototype is a separate mode backed by the Python `GameSession`
+and `MinesweeperAgent`. It uses only the Python standard library and does not
+modify or replace the static browser demo.
+
+Start the server:
+
+```bash
+uv run python examples/web_server.py
+```
+
+Then inspect the current game or send a player action from another terminal:
+
+```bash
+curl http://127.0.0.1:8000/api/game
+
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"row": 0, "col": 0}' \
+  http://127.0.0.1:8000/api/game/reveal
+```
+
+The prototype also supports starting a new game, toggling flags, requesting an
+AI suggestion, and applying a Helper move. It is currently a JSON API rather
+than a second graphical client; `ui/web/index.html` remains the standalone
+browser-side experience.
 
 ## Development
 
@@ -140,6 +169,8 @@ src/minesweeper_ai/
   agent.py      Knowledge-based AI agent
   session.py    Interface-independent game session
   trace.py      Structured reasoning trace events
+  web_adapter.py
+                Serializable adapter for Python-backed web actions
 
 tests/
   ...           Unit tests for the engine, session, and traces
@@ -147,6 +178,7 @@ tests/
 examples/
   reasoning_trace.py
   simulate_game.py
+  web_server.py Local standard-library JSON API server
 
 ui/web/
   index.html    Static gameplay demo
