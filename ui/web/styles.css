@@ -96,6 +96,7 @@ h3 {
 
 .game__header {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   align-items: start;
   justify-content: space-between;
@@ -117,7 +118,7 @@ h3 {
 }
 
 .button:focus-visible,
-.reveal-style select:focus-visible,
+.game-setting select:focus-visible,
 .cell:focus-visible {
   outline: 3px solid rgb(15 118 110 / 0.35);
   outline-offset: 3px;
@@ -133,8 +134,9 @@ h3 {
 
 .board {
   display: grid;
-  grid-template-columns: repeat(8, minmax(2rem, 1fr));
+  grid-template-columns: repeat(var(--board-width), minmax(2rem, 1fr));
   gap: 0.35rem;
+  overflow-x: auto;
 }
 
 .cell {
@@ -227,7 +229,7 @@ dd {
   justify-content: flex-end;
 }
 
-.reveal-style {
+.game-setting {
   display: grid;
   gap: 0.25rem;
   color: var(--color-muted);
@@ -235,7 +237,7 @@ dd {
   font-weight: 700;
 }
 
-.reveal-style select {
+.game-setting select {
   min-height: 2.75rem;
   padding: 0.65rem 2rem 0.65rem 0.75rem;
   color: var(--color-text);

@@ -2,15 +2,23 @@ const boardElement = document.querySelector("#board");
 const statusElement = document.querySelector("#status");
 const restartButton = document.querySelector("#restart-button");
 const helperButton = document.querySelector("#helper-button");
+const difficultyElement = document.querySelector("#difficulty");
 const revealStyleElement = document.querySelector("#reveal-style");
 const knownSafesElement = document.querySelector("#known-safes");
 const knownMinesElement = document.querySelector("#known-mines");
 const suggestedMoveElement = document.querySelector("#suggested-move");
 const traceListElement = document.querySelector("#trace-list");
 
-const height = 8;
-const width = 8;
-const mineCount = 8;
+const difficulties = {
+  easy: { label: "Easy", height: 8, width: 8, mineCount: 8 },
+  intermediate: {
+    label: "Intermediate",
+    height: 10,
+    width: 10,
+    mineCount: 15,
+  },
+  hard: { label: "Hard", height: 12, width: 12, mineCount: 25 },
+};
 
 let game = createGame();
 
@@ -26,7 +34,8 @@ function parseCellKey(key) {
   return key.split(",").map((value) => Number.parseInt(value, 10));
 }
 
-function createGame(revealStyle = "classic") {
+function createGame(difficulty = "easy", revealStyle = "classic") {
+  const { height, width, mineCount } = difficulties[difficulty];
   const mines = new Set();
 
   while (mines.size < mineCount) {
@@ -36,6 +45,10 @@ function createGame(revealStyle = "classic") {
   }
 
   return {
+    difficulty,
+    height,
+    width,
+    mineCount,
     mines,
     revealed: new Set(),
     flags: new Set(),
@@ -46,7 +59,7 @@ function createGame(revealStyle = "classic") {
 }
 
 function hasWon() {
-  if (game.flags.size !== game.mines.size) {
+  if (game.flags.size !== game.mineCount) {
     return false;
   }
 
@@ -77,9 +90,9 @@ function neighbors(row, col) {
 
       if (
         neighborRow >= 0 &&
-        neighborRow < height &&
+        neighborRow < game.height &&
         neighborCol >= 0 &&
-        neighborCol < width
+        neighborCol < game.width
       ) {
         cells.push([neighborRow, neighborCol]);
       }
@@ -204,8 +217,8 @@ function suspectedMineCells() {
 function availableMoves() {
   const moves = [];
 
-  for (let row = 0; row < height; row += 1) {
-    for (let col = 0; col < width; col += 1) {
+  for (let row = 0; row < game.height; row += 1) {
+    for (let col = 0; col < game.width; col += 1) {
       const key = cellKey(row, col);
 
       if (!game.revealed.has(key) && !game.flags.has(key)) {
@@ -296,9 +309,10 @@ function suggestedMove() {
 
 function renderBoard() {
   boardElement.innerHTML = "";
+  boardElement.style.setProperty("--board-width", game.width);
 
-  for (let row = 0; row < height; row += 1) {
-    for (let col = 0; col < width; col += 1) {
+  for (let row = 0; row < game.height; row += 1) {
+    for (let col = 0; col < game.width; col += 1) {
       const key = cellKey(row, col);
       const button = document.createElement("button");
       const isRevealed = game.revealed.has(key);
@@ -384,6 +398,17 @@ function render() {
   renderTrace();
 }
 
+difficultyElement.addEventListener("change", () => {
+  const difficulty = difficultyElement.value;
+  const { label, height, width, mineCount } = difficulties[difficulty];
+
+  game = createGame(difficulty, game.revealStyle);
+  game.trace.unshift(
+    `Difficulty changed to ${label}: ${height}x${width} board with ${mineCount} mines.`,
+  );
+  render();
+});
+
 revealStyleElement.addEventListener("change", () => {
   game.revealStyle = revealStyleElement.value;
   game.trace.unshift(
@@ -395,7 +420,7 @@ revealStyleElement.addEventListener("change", () => {
 helperButton.addEventListener("click", makeHelperMove);
 
 restartButton.addEventListener("click", () => {
-  game = createGame(game.revealStyle);
+  game = createGame(game.difficulty, game.revealStyle);
   render();
 });
 
