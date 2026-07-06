@@ -5,6 +5,9 @@ import random
 
 import pytest
 
+from minesweeper_ai.agent import MinesweeperAgent
+from minesweeper_ai.board import Board
+from minesweeper_ai.session import GameSession
 from minesweeper_ai.web_adapter import WebGameAdapter
 
 
@@ -160,6 +163,56 @@ def test_state_is_json_serializable() -> None:
     encoded = json.dumps(adapter.state())
 
     assert '"difficulty": "beginner"' in encoded
+
+
+def test_classic_reveal_expands_empty_cells() -> None:
+    mines = {(2, 2)}
+    board = Board(height=3, width=3, mines=mines)
+    adapter = make_adapter()
+    adapter.session = GameSession(board=board, agent=MinesweeperAgent(board=board))
+    adapter.reveal_style = "classic"
+
+    adapter.reveal(0, 0)
+
+    # Classic reveal flood-fills all safe cells reachable from (0, 0).
+    assert len(adapter.session.revealed) > 1
+    assert (2, 2) not in adapter.session.revealed
+
+
+def test_tactical_reveal_reveals_only_selected_cell() -> None:
+    mines = {(2, 2)}
+    board = Board(height=3, width=3, mines=mines)
+    adapter = make_adapter()
+    adapter.session = GameSession(board=board, agent=MinesweeperAgent(board=board))
+    adapter.reveal_style = "tactical"
+
+    adapter.reveal(0, 0)
+
+    assert adapter.session.revealed == {(0, 0)}
+
+
+def test_new_game_stores_reveal_style() -> None:
+    adapter = make_adapter()
+
+    state = adapter.new_game("beginner", "tactical")
+
+    assert state["reveal_style"] == "tactical"
+    assert adapter.reveal_style == "tactical"
+
+
+def test_state_includes_reveal_style() -> None:
+    adapter = make_adapter()
+
+    state = adapter.state()
+
+    assert state["reveal_style"] == "classic"
+
+
+def test_new_game_rejects_unknown_reveal_style() -> None:
+    adapter = make_adapter()
+
+    with pytest.raises(ValueError, match="Unknown reveal style"):
+        adapter.new_game("beginner", "fancy")
 
 
 @pytest.mark.parametrize(

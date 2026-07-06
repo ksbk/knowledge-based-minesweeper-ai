@@ -2,6 +2,8 @@ const boardElement = document.querySelector("#board");
 const statusElement = document.querySelector("#status");
 const connectionElement = document.querySelector("#connection-message");
 const difficultyElement = document.querySelector("#difficulty");
+const revealStyleElement = document.querySelector("#reveal-style");
+const helperVisibilityElement = document.querySelector("#helper-visibility");
 const suggestButton = document.querySelector("#suggest-button");
 const helperButton = document.querySelector("#helper-button");
 const newGameButton = document.querySelector("#new-game-button");
@@ -93,10 +95,14 @@ function isGameOver() {
 function renderControls() {
   const hasGame = game !== null;
   const gameOver = hasGame && isGameOver();
+  const helperHidden = helperVisibilityElement.value === "hidden";
 
   difficultyElement.disabled = requestInFlight;
+  revealStyleElement.disabled = requestInFlight;
+  helperVisibilityElement.disabled = requestInFlight;
   newGameButton.disabled = requestInFlight;
   suggestButton.disabled = requestInFlight || !hasGame || gameOver;
+  helperButton.hidden = helperHidden;
   helperButton.disabled = requestInFlight || !hasGame || gameOver;
 }
 
@@ -221,6 +227,7 @@ function renderTrace() {
 function render() {
   if (game !== null) {
     difficultyElement.value = game.difficulty;
+    revealStyleElement.value = game.reveal_style;
   }
 
   renderControls();
@@ -238,7 +245,10 @@ async function loadGame() {
 async function startNewGame() {
   game = await requestJson("/api/game", {
     method: "POST",
-    body: JSON.stringify({ difficulty: difficultyElement.value }),
+    body: JSON.stringify({
+      difficulty: difficultyElement.value,
+      reveal_style: revealStyleElement.value,
+    }),
   });
   suggestion = null;
   suggestionRequested = false;

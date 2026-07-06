@@ -16,6 +16,8 @@ DIFFICULTIES = {
     "hard": {"height": 12, "width": 12, "mine_count": 25},
 }
 
+REVEAL_STYLES = {"classic", "tactical"}
+
 
 def _serialize_cell(cell: Cell) -> dict[str, int]:
     """Return a JSON-serializable cell representation."""
@@ -29,14 +31,20 @@ class WebGameAdapter:
     def __init__(self, rng: random.Random | None = None) -> None:
         self._rng = rng or random.Random()
         self.difficulty = "beginner"
+        self.reveal_style = "classic"
         self.session: GameSession
         self.new_game()
 
-    def new_game(self, difficulty: str = "beginner") -> dict[str, object]:
-        """Start and return a new game for the selected difficulty."""
+    def new_game(
+        self, difficulty: str = "beginner", reveal_style: str = "classic"
+    ) -> dict[str, object]:
+        """Start and return a new game for the selected difficulty and reveal style."""
         if difficulty not in DIFFICULTIES:
             choices = ", ".join(DIFFICULTIES)
             raise ValueError(f"Unknown difficulty. Choose one of: {choices}.")
+
+        if reveal_style not in REVEAL_STYLES:
+            raise ValueError("Unknown reveal style. Choose classic or tactical.")
 
         config = DIFFICULTIES[difficulty]
         height = config["height"]
@@ -47,6 +55,7 @@ class WebGameAdapter:
         board = Board(height=height, width=width, mines=mines)
 
         self.difficulty = difficulty
+        self.reveal_style = reveal_style
         self.session = GameSession(
             board=board,
             agent=MinesweeperAgent(board=board),
@@ -57,7 +66,10 @@ class WebGameAdapter:
         """Reveal a cell through the active Python game session."""
         cell = self._validated_cell(row, col)
         if not self._is_game_over():
-            self.session.reveal_cell(cell)
+            if self.reveal_style == "classic":
+                self._reveal_classic(cell)
+            else:
+                self.session.reveal_cell(cell)
         return self.state()
 
     def toggle_flag(self, row: int, col: int) -> dict[str, object]:
@@ -115,6 +127,7 @@ class WebGameAdapter:
 
         return {
             "difficulty": self.difficulty,
+            "reveal_style": self.reveal_style,
             "height": board.height,
             "width": board.width,
             "mine_count": len(board.mines),
@@ -151,6 +164,24 @@ class WebGameAdapter:
     def _is_game_over(self) -> bool:
         """Return whether the active session has ended."""
         return self.session.lost or self.session.won
+
+    def _reveal_classic(self, cell: Cell) -> None:
+        """Reveal a cell and flood-fill connected empty safe cells."""
+        queue = [cell]
+        while queue:
+            current = queue.pop()
+            if current in self.session.revealed or current in self.session.flags:
+                continue
+            self.session.reveal_cell(current)
+            if self.session.lost:
+                return
+            if self.session.board.nearby_mines(current) == 0:
+                queue.extend(
+                    neighbor
+                    for neighbor in self.session.board.neighbors(current)
+                    if neighbor not in self.session.revealed
+                    and neighbor not in self.session.flags
+                )
 
     def _suggest_valid_move(self) -> Cell | None:
         """Return an unflagged, unrevealed move while preserving AI preference."""
