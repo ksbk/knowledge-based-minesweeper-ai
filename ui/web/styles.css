@@ -212,3 +212,8 @@ dd {
     top: 1rem;
   }
 }
+.cell[data-state="flagged"] {
+  color: var(--color-accent-dark);
+  background: rgb(15 118 110 / 0.12);
+  border-color: var(--color-accent);
+}
