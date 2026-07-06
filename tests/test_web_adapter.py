@@ -24,6 +24,17 @@ def make_adapter_with_flagged_safe() -> tuple[WebGameAdapter, tuple[int, int]]:
     return adapter, flagged_safe
 
 
+def test_new_game_uses_beginner_difficulty() -> None:
+    adapter = make_adapter()
+
+    state = adapter.new_game("beginner")
+
+    assert state["difficulty"] == "beginner"
+    assert state["height"] == 5
+    assert state["width"] == 5
+    assert state["mine_count"] == 3
+
+
 def test_new_game_uses_selected_difficulty() -> None:
     adapter = make_adapter()
 
@@ -148,7 +159,7 @@ def test_state_is_json_serializable() -> None:
 
     encoded = json.dumps(adapter.state())
 
-    assert '"difficulty": "easy"' in encoded
+    assert '"difficulty": "beginner"' in encoded
 
 
 @pytest.mark.parametrize(
