@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Knowledge-Based Minesweeper AI</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="app">
+      <section class="hero" aria-labelledby="page-title">
+        <p class="eyebrow">Symbolic AI demo</p>
+        <h1 id="page-title">Knowledge-Based Minesweeper AI</h1>
+        <p class="hero__lead">
+          Play a small Minesweeper board and compare your choices with an AI
+          agent that reasons from logical constraints.
+        </p>
+      </section>
+
+      <section class="game" aria-labelledby="game-title">
+        <div class="game__header">
+          <div>
+            <p class="eyebrow">Interactive board</p>
+            <h2 id="game-title">Minesweeper board</h2>
+          </div>
+
+          <button class="button" type="button" id="restart-button">
+            Restart
+          </button>
+        </div>
+
+        <p class="status" id="status">Choose a cell to begin.</p>
+
+        <div class="board" id="board" aria-label="Minesweeper board"></div>
+      </section>
+
+      <aside class="panel" aria-labelledby="ai-title">
+        <p class="eyebrow">AI assistant</p>
+        <h2 id="ai-title">Reasoning state</h2>
+
+        <dl class="facts">
+          <div class="fact">
+            <dt>Known safe cells</dt>
+            <dd id="known-safes">None yet</dd>
+          </div>
+
+          <div class="fact">
+            <dt>Known mines</dt>
+            <dd id="known-mines">None yet</dd>
+          </div>
+
+          <div class="fact">
+            <dt>Suggested move</dt>
+            <dd id="suggested-move">Not available yet</dd>
+          </div>
+        </dl>
+
+        <div class="trace">
+          <h3>Reasoning trace</h3>
+          <ol id="trace-list">
+            <li>No reasoning events yet.</li>
+          </ol>
+        </div>
+      </aside>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
