@@ -65,6 +65,12 @@ is a documented design property, not a hidden limitation.
 The static web UI supports reveal, flag, restart, win/loss status, a session
 trace, and configurable gameplay:
 
+Public demo URL (GitHub Pages):
+
+```text
+https://ksbk.github.io/knowledge-based-minesweeper-ai/
+```
+
 | Setting | Options | Behavior |
 | --- | --- | --- |
 | Difficulty | Beginner, Easy, Intermediate, Hard | Uses 5x5 with 3 mines, 8x8 with 8 mines, 10x10 with 15 mines, or 12x12 with 25 mines. |
@@ -79,6 +85,30 @@ open ui/web/index.html
 
 The web demo has no runtime dependencies. Its gameplay state and Helper logic
 run in browser-side JavaScript.
+
+#### GitHub Pages publishing setup
+
+This repository includes a Pages workflow that publishes only the static demo
+from `ui/web/` (no Python server and no API-backed client deployment).
+
+If GitHub Pages is not already enabled for this repository:
+
+1. Open repository Settings > Pages.
+2. Set Source to GitHub Actions.
+3. Push to `main` (or run the Pages workflow manually).
+
+After deployment, verify the public demo at:
+
+```text
+https://ksbk.github.io/knowledge-based-minesweeper-ai/
+```
+
+Verification checklist:
+
+1. The page loads without starting `examples/web_server.py`.
+2. Reveal/flag/restart interactions work in the browser.
+3. Difficulty, Reveal style, and Helper visibility controls update gameplay.
+4. Browser devtools show no requests to `/api/` endpoints.
 
 ### Python-Backed Browser Client
 
