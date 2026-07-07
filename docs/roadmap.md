@@ -14,11 +14,11 @@
 - v1.0.0 — Configurable browser gameplay
 - v1.1.0 — Python-backed web API prototype
 - v1.2.0 — Python-backed browser client
+- v1.3.0 — Beginner difficulty and difficulty descriptions
+- v1.4.0 — Python-backed gameplay settings parity
 
 ## Future
 
-- v1.3.0 — Beginner difficulty and difficulty descriptions
-- v1.4.0 — Python-backed gameplay settings parity
 - v1.5.0 — Custom board size
 - v1.6.0 — Public API and typing hardening
 - v1.7.0 — Packaging and TestPyPI preparation
