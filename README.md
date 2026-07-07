@@ -1,8 +1,8 @@
 # Knowledge-Based Minesweeper AI
 
 A portfolio-ready implementation of Minesweeper built around a tested Python
-symbolic AI engine, an interface-independent game session, and a dependency-free
-static web demo.
+symbolic AI engine, an interface-independent game session, a dependency-free
+static browser demo, and a Python-backed browser client.
 
 The project focuses on symbolic knowledge representation, deterministic
 inference, structured reasoning traces, and testable software design. The core
@@ -11,15 +11,52 @@ directly.
 
 ## Current Status
 
-Version 1.2.0 includes:
+Version 1.4.0 includes:
 
 - a tested Python engine with direct and subset-based logical inference
 - an interface-independent `GameSession`
 - structured reasoning trace output
 - command-line examples and simulation
 - a configurable static web gameplay demo
-- a Python-backed browser client served by a local API
+- a Python-backed browser client with full gameplay settings parity
+- Beginner, Easy, Intermediate, and Hard difficulty levels
+- Classic and Tactical reveal styles in both browser modes
 - development and validation commands through `make`
+
+## What This Demonstrates
+
+This project is a portfolio case study in symbolic AI and incremental Python
+engineering, built through 14 tagged releases from a bare AI engine to a
+configurable two-interface application.
+
+**Knowledge-based inference.** `MinesweeperAgent` maintains a knowledge base
+of logical constraint sentences and applies subset-based propagation to
+identify safe cells and mines without guessing where possible.
+
+**Interface-independent design.** `GameSession` models board state and agent
+interaction without any UI dependency. The same session powers CLI examples,
+the static web demo, and the Python-backed API client.
+
+**Multiple interfaces, one engine.** Three runnable demo modes share the same
+core logic:
+
+| Mode | How to run |
+| --- | --- |
+| CLI reasoning trace | `make example` |
+| CLI board simulation | `make simulate` |
+| Standalone browser demo | `open ui/web/index.html` |
+| Python-backed browser client | `uv run python examples/web_server.py` then open `http://127.0.0.1:8000/client/` |
+
+**Configurable gameplay.** Both browser modes support Difficulty (Beginner to
+Hard) and Reveal style (Classic flood-fill or Tactical single-cell). The
+Python-backed client syncs all settings through the local JSON API.
+
+**Test-driven releases.** Each release added tests before introducing the next
+layer. All core modules are covered by unit tests in `tests/`.
+
+**Honest limitations.** The agent uses deterministic inference only. When no
+safe move can be inferred, it chooses arbitrarily and may reveal a mine. This
+is a documented design property, not a hidden limitation.
 
 ## Web Modes
 
