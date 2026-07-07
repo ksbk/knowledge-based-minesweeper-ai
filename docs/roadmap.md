@@ -16,6 +16,7 @@
 - v1.2.0 — Python-backed browser client
 - v1.3.0 — Beginner difficulty and difficulty descriptions
 - v1.4.0 — Python-backed gameplay settings parity
+- v1.4.1 — Portfolio demo notes and documentation polish
 
 ## Future
 

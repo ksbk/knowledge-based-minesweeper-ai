@@ -11,7 +11,7 @@ directly.
 
 ## Current Status
 
-Version 1.4.0 includes:
+Version 1.4.1 includes:
 
 - a tested Python engine with direct and subset-based logical inference
 - an interface-independent `GameSession`
@@ -26,7 +26,7 @@ Version 1.4.0 includes:
 ## What This Demonstrates
 
 This project is a portfolio case study in symbolic AI and incremental Python
-engineering, built through 14 tagged releases from a bare AI engine to a
+engineering, built through 15 tagged releases from a bare AI engine to a
 configurable two-interface application.
 
 **Knowledge-based inference.** `MinesweeperAgent` maintains a knowledge base
