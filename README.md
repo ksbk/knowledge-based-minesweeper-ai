@@ -1,6 +1,6 @@
 # Knowledge-Based Minesweeper AI
 
-A portfolio-ready implementation of Minesweeper built around a tested Python
+A reviewable implementation of Minesweeper built around a tested Python
 symbolic AI engine, an interface-independent game session, a dependency-free
 static browser demo, and a Python-backed browser client.
 
@@ -25,9 +25,9 @@ Version 1.4.1 includes:
 
 ## What This Demonstrates
 
-This project is a portfolio case study in symbolic AI and incremental Python
-engineering, built through 15 tagged releases from a bare AI engine to a
-configurable two-interface application.
+This project is an incremental Python engineering case study in symbolic AI,
+built through 15 tagged releases from a bare AI engine to a configurable
+two-interface application.
 
 **Knowledge-based inference.** `MinesweeperAgent` maintains a knowledge base
 of logical constraint sentences and applies subset-based propagation to
