@@ -8,6 +8,7 @@ The project focuses on symbolic knowledge representation, deterministic inferenc
 
 - Demo: https://ksbk.github.io/knowledge-based-minesweeper-ai/
 - Repository: https://github.com/ksbk/knowledge-based-minesweeper-ai
+- Releases: https://github.com/ksbk/knowledge-based-minesweeper-ai/releases
 
 ## Overview
 
@@ -15,12 +16,14 @@ This project is an incremental Python implementation of symbolic Minesweeper rea
 
 - **Knowledge-based inference:** logical constraint sentences identify safe cells and mines without guessing where possible.
 - **Interface-independent design:** the Python game session and AI engine are separate from command-line and browser interfaces.
-- **Multiple interfaces:** command-line examples, a standalone static browser demo, and a Python-backed browser client exercise the project from different layers.
+- **Multiple interfaces:** command-line examples, a standalone static browser demo, and a local Python-backed browser client exercise the project from different layers.
 - **Reasoning traces:** AI behavior can be inspected rather than treated as a black box.
 - **Testing:** core reasoning behavior is covered by unit tests and checked with linting.
 - **Known limits:** the agent uses deterministic inference and can lose when no safe move is logically known.
 
 ## Usage
+
+Requires Python 3.13 or newer.
 
 Install dependencies:
 
@@ -74,7 +77,7 @@ src/minesweeper_ai/
 
 Detailed architecture notes are in [`docs/architecture.md`](docs/architecture.md).
 
-## Testing and Project Practices
+## Testing
 
 - Unit tests for core reasoning behavior
 - Ruff linting through `make check`
