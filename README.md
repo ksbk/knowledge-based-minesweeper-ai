@@ -99,7 +99,7 @@ The agent uses deterministic symbolic inference. When no safe move can be inferr
 - [`docs/demo.md`](docs/demo.md) — static demo, Python-backed browser client, and API examples
 - [`docs/design-notes.md`](docs/design-notes.md) — design principles and project rationale
 - [`docs/roadmap.md`](docs/roadmap.md) — released milestones and planned improvements
-- [`docs/reviews/project-readiness.md`](docs/reviews/project-readiness.md) — technical readiness review
+- [`docs/reviews/technical-review.md`](docs/reviews/technical-review.md) — technical review notes
 
 ## Development Commands
 
