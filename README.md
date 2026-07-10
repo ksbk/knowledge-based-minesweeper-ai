@@ -1,153 +1,34 @@
 # Knowledge-Based Minesweeper AI
 
-A reviewable implementation of Minesweeper built around a tested Python
-symbolic AI engine, an interface-independent game session, a dependency-free
-static browser demo, and a Python-backed browser client.
+A reviewable Python implementation of Minesweeper built around a tested symbolic AI engine, structured reasoning traces, and browser interfaces.
 
-The project focuses on symbolic knowledge representation, deterministic
-inference, structured reasoning traces, and testable software design. The core
-AI engine remains separate from user interfaces so its reasoning can be audited
-directly.
+The project focuses on symbolic knowledge representation, deterministic inference, interface-independent design, and testable software behavior. The core AI engine remains separate from user interfaces so its reasoning can be inspected directly.
 
-## Current Status
+## Live Demo
 
-Version 1.4.1 includes:
+- Demo: https://ksbk.github.io/knowledge-based-minesweeper-ai/
+- Repository: https://github.com/ksbk/knowledge-based-minesweeper-ai
 
-- a tested Python engine with direct and subset-based logical inference
-- an interface-independent `GameSession`
-- structured reasoning trace output
-- command-line examples and simulation
-- a configurable static web gameplay demo
-- a Python-backed browser client with full gameplay settings parity
-- Beginner, Easy, Intermediate, and Hard difficulty levels
-- Classic and Tactical reveal styles in both browser modes
-- development and validation commands through `make`
+## Review in 2 Minutes
+
+1. Open the live demo.
+2. Skim [What This Demonstrates](#what-this-demonstrates).
+3. Run `make check`.
+4. Inspect `src/minesweeper_ai/agent.py`, `sentence.py`, and `session.py`.
+5. Read [`docs/architecture.md`](docs/architecture.md) for the module map.
 
 ## What This Demonstrates
 
-This project is an incremental Python engineering case study in symbolic AI,
-built through 15 tagged releases from a bare AI engine to a configurable
-two-interface application.
+This project is an incremental Python engineering case study in symbolic AI, built through tagged releases from a bare AI engine to a configurable two-interface application.
 
-**Knowledge-based inference.** `MinesweeperAgent` maintains a knowledge base
-of logical constraint sentences and applies subset-based propagation to
-identify safe cells and mines without guessing where possible.
+- **Knowledge-based inference:** logical constraint sentences identify safe cells and mines without guessing where possible.
+- **Interface-independent design:** the Python game session and AI engine are separate from command-line and browser interfaces.
+- **Multiple interfaces:** command-line examples, a standalone static browser demo, and a Python-backed browser client exercise the project from different layers.
+- **Structured reasoning traces:** AI behavior can be inspected rather than treated as a black box.
+- **Test-driven releases:** core reasoning behavior is covered by unit tests and checked with linting.
+- **Honest limitations:** the agent uses deterministic inference and can lose when no safe move is logically known.
 
-**Interface-independent design.** `GameSession` models board state and agent
-interaction without any UI dependency. The same session powers CLI examples,
-the static web demo, and the Python-backed API client.
-
-**Multiple interfaces, one engine.** Three runnable demo modes share the same
-core logic:
-
-| Mode | How to run |
-| --- | --- |
-| CLI reasoning trace | `make example` |
-| CLI board simulation | `make simulate` |
-| Standalone browser demo | `open ui/web/index.html` |
-| Python-backed browser client | `uv run python examples/web_server.py` then open `http://127.0.0.1:8000/client/` |
-
-**Configurable gameplay.** Both browser modes support Difficulty (Beginner to
-Hard) and Reveal style (Classic flood-fill or Tactical single-cell). The
-Python-backed client syncs all settings through the local JSON API.
-
-**Test-driven releases.** Each release added tests before introducing the next
-layer. All core modules are covered by unit tests in `tests/`.
-
-**Honest limitations.** The agent uses deterministic inference only. When no
-safe move can be inferred, it chooses arbitrarily and may reveal a mine. This
-is a documented design property, not a hidden limitation.
-
-## Web Modes
-
-### Static Browser-Only Demo
-
-The static web UI supports reveal, flag, restart, win/loss status, a session
-trace, and configurable gameplay:
-
-Public demo URL (GitHub Pages):
-
-```text
-https://ksbk.github.io/knowledge-based-minesweeper-ai/
-```
-
-| Setting | Options | Behavior |
-| --- | --- | --- |
-| Difficulty | Beginner, Easy, Intermediate, Hard | Uses 5x5 with 3 mines, 8x8 with 8 mines, 10x10 with 15 mines, or 12x12 with 25 mines. |
-| Reveal style | Classic, Tactical | Classic expands connected empty safe areas; Tactical reveals only the selected cell. |
-| Helper | Available, Hidden | Shows or hides the browser-side Helper move control. |
-
-Open [`ui/web/index.html`](ui/web/index.html) directly in a browser. On macOS:
-
-```bash
-open ui/web/index.html
-```
-
-The web demo has no runtime dependencies. Its gameplay state and Helper logic
-run in browser-side JavaScript.
-
-#### GitHub Pages publishing setup
-
-This repository includes a Pages workflow that publishes only the static demo
-from `ui/web/` (no Python server and no API-backed client deployment).
-
-If GitHub Pages is not already enabled for this repository:
-
-1. Open repository Settings > Pages.
-2. Set Source to GitHub Actions.
-3. Push to `main` (or run the Pages workflow manually).
-
-After deployment, verify the public demo at:
-
-```text
-https://ksbk.github.io/knowledge-based-minesweeper-ai/
-```
-
-Verification checklist:
-
-1. The page loads without starting `examples/web_server.py`.
-2. Reveal/flag/restart interactions work in the browser.
-3. Difficulty, Reveal style, and Helper visibility controls update gameplay.
-4. Browser devtools show no requests to `/api/` endpoints.
-
-### Python-Backed Browser Client
-
-The Python-backed client is a separate browser experience backed by the Python
-`GameSession` and `MinesweeperAgent`. It uses only the Python standard library
-and does not modify or replace the static browser demo.
-
-Start the server:
-
-```bash
-uv run python examples/web_server.py
-```
-
-Then open:
-
-```text
-http://127.0.0.1:8000/client/
-```
-
-The client displays Python game state and reasoning output. Reveals, flags, new
-games, AI suggestions, and Helper moves all flow through the local JSON API.
-Unlike the standalone demo, `ui/api/index.html` requires the server and should
-be opened through the `/client/` URL.
-
-The API remains available directly for inspection:
-
-```bash
-curl http://127.0.0.1:8000/api/game
-
-curl -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"row": 0, "col": 0}' \
-  http://127.0.0.1:8000/api/game/reveal
-```
-
-`ui/web/index.html` remains the independent browser-side experience and does
-not require the Python server.
-
-## Development
+## Quick Start
 
 Install dependencies:
 
@@ -161,113 +42,76 @@ Run tests and linting:
 make check
 ```
 
-Run tests only:
-
-```bash
-make test
-```
-
-Run linting only:
-
-```bash
-make lint
-```
-
-Format code:
-
-```bash
-make format
-```
-
-Clean generated files:
-
-```bash
-make clean
-```
-
-## Reasoning Trace Example
-
-Run:
+Run a reasoning trace:
 
 ```bash
 make example
 ```
 
-This prints a deterministic reasoning trace showing how the agent uses subset inference.
-
-Example output:
-
-```text
-Initial knowledge:
-Known safes: {}
-Known mines: {}
-Knowledge:
-  {(0, 1), (1, 0)} = 1
-
-Reveal safe cell (0, 0) with nearby mine count 1.
-
-After update:
-Known safes: {(0, 0), (1, 1)}
-Known mines: {}
-Knowledge:
-  {(0, 1), (1, 0)} = 1
-
-Next safe move:
-  (1, 1)
-```
-
-## Command-Line Simulation
-
-Run:
+Run a board simulation:
 
 ```bash
 make simulate
 ```
 
-This runs a small board through the agent loop.
+Run the Python-backed browser client:
 
-The simulation demonstrates the full engine flow:
+```bash
+uv run python examples/web_server.py
+```
 
-- choose a known safe move when available
-- choose an uncertain legal move when no safe move is known
-- reveal nearby mine counts
-- update the knowledge base
-- infer new safe cells and mines where possible
+Then open:
 
-Because the agent uses deterministic inference rather than probability, it may hit a mine when no safe move can be inferred.
+```text
+http://127.0.0.1:8000/client/
+```
 
-## Project Structure
+The dependency-free static browser demo can also be opened directly from `ui/web/index.html`. See [`docs/demo.md`](docs/demo.md) for cross-platform commands and demo details.
+
+## Architecture at a Glance
 
 ```text
 src/minesweeper_ai/
-  types.py      Shared type aliases
-  sentence.py   Logical sentence representation
-  board.py      Board model and neighboring-cell logic
-  agent.py      Knowledge-based AI agent
+  sentence.py   Logical constraint sentences
+  agent.py      Knowledge-based inference agent
+  board.py      Board and neighboring-cell model
   session.py    Interface-independent game session
   trace.py      Structured reasoning trace events
-  web_adapter.py
-                Serializable adapter for Python-backed web actions
-
-tests/
-  ...           Unit tests for the engine, session, and traces
-
-examples/
-  reasoning_trace.py
-  simulate_game.py
-  web_server.py Local standard-library JSON API server
-
-ui/web/
-  index.html    Static gameplay demo
-  app.js        Browser-side game state and interactions
-  styles.css    Web UI presentation
-
-ui/api/
-  index.html    Python-backed browser client
-  app.js        JSON API interactions and rendering
-  styles.css    API client presentation
+  web_adapter.py JSON-friendly web adapter
 ```
 
-## Design Direction
+Detailed architecture notes are in [`docs/architecture.md`](docs/architecture.md).
 
-See [`docs/design-notes.md`](docs/design-notes.md) for the project design notes.
+## Quality Signals
+
+- Public static demo through GitHub Pages
+- Unit tests for core reasoning behavior
+- Ruff linting through `make check`
+- Interface-independent Python engine
+- Browser and command-line interfaces
+- Structured reasoning trace output
+- Tagged release history
+- Documented limitations
+
+## Limitations
+
+The agent uses deterministic symbolic inference. When no safe move can be inferred, it may choose an uncertain legal move and can reveal a mine. This is an expected limitation of the current design, not a hidden failure mode.
+
+## Documentation
+
+- [`docs/README.md`](docs/README.md) — documentation index
+- [`docs/architecture.md`](docs/architecture.md) — module boundaries, data flow, and interface separation
+- [`docs/reasoning.md`](docs/reasoning.md) — knowledge representation, inference rules, trace example, and simulation flow
+- [`docs/demo.md`](docs/demo.md) — static demo, Python-backed browser client, and API examples
+- [`docs/design-notes.md`](docs/design-notes.md) — design principles and project rationale
+- [`docs/roadmap.md`](docs/roadmap.md) — released milestones and planned improvements
+- [`docs/reviews/project-readiness.md`](docs/reviews/project-readiness.md) — technical readiness review
+
+## Development Commands
+
+```bash
+make test
+make lint
+make format
+make clean
+```
