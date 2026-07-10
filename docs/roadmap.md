@@ -17,6 +17,7 @@
 - v1.3.0 — Beginner difficulty and difficulty descriptions
 - v1.4.0 — Python-backed gameplay settings parity
 - v1.4.1 — Public demo notes and documentation polish
+- v1.4.3 — Documentation structure and demo overview
 
 ## Future
 
@@ -24,5 +25,5 @@
 - v1.6.0 — Public API and typing hardening
 - v1.7.0 — Packaging and TestPyPI preparation
 - v1.8.0 — PyPI publishing
-- v1.9.0 — Screenshots and demo assets
+- v1.9.0 — Real browser screenshot or short demo GIF
 - v2.0.0 — Stable public interactive AI package/demo
