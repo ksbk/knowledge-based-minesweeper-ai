@@ -16,7 +16,7 @@
 - v1.2.0 — Python-backed browser client
 - v1.3.0 — Beginner difficulty and difficulty descriptions
 - v1.4.0 — Python-backed gameplay settings parity
-- v1.4.1 — Portfolio demo notes and documentation polish
+- v1.4.1 — Public demo notes and documentation polish
 
 ## Future
 
@@ -24,5 +24,5 @@
 - v1.6.0 — Public API and typing hardening
 - v1.7.0 — Packaging and TestPyPI preparation
 - v1.8.0 — PyPI publishing
-- v1.9.0 — Portfolio showcase assets
+- v1.9.0 — Screenshots and demo assets
 - v2.0.0 — Stable public interactive AI package/demo
