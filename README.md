@@ -10,6 +10,8 @@ The project focuses on symbolic knowledge representation, deterministic inferenc
 - Repository: https://github.com/ksbk/knowledge-based-minesweeper-ai
 - Releases: https://github.com/ksbk/knowledge-based-minesweeper-ai/releases
 
+![Demo overview](docs/assets/demo-overview.svg)
+
 ## Overview
 
 This project is an incremental Python implementation of symbolic Minesweeper reasoning, built through tagged releases from a bare AI engine to a configurable two-interface application.
