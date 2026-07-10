@@ -1,34 +1,26 @@
 # Knowledge-Based Minesweeper AI
 
-A reviewable Python implementation of Minesweeper built around a tested symbolic AI engine, structured reasoning traces, and browser interfaces.
+A Python implementation of Minesweeper built around a tested symbolic AI engine, structured reasoning traces, and browser interfaces.
 
 The project focuses on symbolic knowledge representation, deterministic inference, interface-independent design, and testable software behavior. The core AI engine remains separate from user interfaces so its reasoning can be inspected directly.
 
-## Live Demo
+## Links
 
 - Demo: https://ksbk.github.io/knowledge-based-minesweeper-ai/
 - Repository: https://github.com/ksbk/knowledge-based-minesweeper-ai
 
-## Review in 2 Minutes
+## Overview
 
-1. Open the live demo.
-2. Skim [What This Demonstrates](#what-this-demonstrates).
-3. Run `make check`.
-4. Inspect `src/minesweeper_ai/agent.py`, `sentence.py`, and `session.py`.
-5. Read [`docs/architecture.md`](docs/architecture.md) for the module map.
-
-## What This Demonstrates
-
-This project is an incremental Python engineering case study in symbolic AI, built through tagged releases from a bare AI engine to a configurable two-interface application.
+This project is an incremental Python implementation of symbolic Minesweeper reasoning, built through tagged releases from a bare AI engine to a configurable two-interface application.
 
 - **Knowledge-based inference:** logical constraint sentences identify safe cells and mines without guessing where possible.
 - **Interface-independent design:** the Python game session and AI engine are separate from command-line and browser interfaces.
 - **Multiple interfaces:** command-line examples, a standalone static browser demo, and a Python-backed browser client exercise the project from different layers.
-- **Structured reasoning traces:** AI behavior can be inspected rather than treated as a black box.
-- **Test-driven releases:** core reasoning behavior is covered by unit tests and checked with linting.
-- **Honest limitations:** the agent uses deterministic inference and can lose when no safe move is logically known.
+- **Reasoning traces:** AI behavior can be inspected rather than treated as a black box.
+- **Testing:** core reasoning behavior is covered by unit tests and checked with linting.
+- **Known limits:** the agent uses deterministic inference and can lose when no safe move is logically known.
 
-## Quick Start
+## Usage
 
 Install dependencies:
 
@@ -68,7 +60,7 @@ http://127.0.0.1:8000/client/
 
 The dependency-free static browser demo can also be opened directly from `ui/web/index.html`. See [`docs/demo.md`](docs/demo.md) for cross-platform commands and demo details.
 
-## Architecture at a Glance
+## Architecture
 
 ```text
 src/minesweeper_ai/
@@ -82,9 +74,8 @@ src/minesweeper_ai/
 
 Detailed architecture notes are in [`docs/architecture.md`](docs/architecture.md).
 
-## Quality Signals
+## Testing and Project Practices
 
-- Public static demo through GitHub Pages
 - Unit tests for core reasoning behavior
 - Ruff linting through `make check`
 - Interface-independent Python engine
@@ -95,7 +86,7 @@ Detailed architecture notes are in [`docs/architecture.md`](docs/architecture.md
 
 ## Limitations
 
-The agent uses deterministic symbolic inference. When no safe move can be inferred, it may choose an uncertain legal move and can reveal a mine. This is an expected limitation of the current design, not a hidden failure mode.
+The agent uses deterministic symbolic inference. When no safe move can be inferred, it may choose an uncertain legal move and can reveal a mine. This is an expected limitation of the current design.
 
 ## Documentation
 
