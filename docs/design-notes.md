@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This project builds a Minesweeper AI agent as a small, professional Python package.
+This project builds a Minesweeper AI agent as a small, reviewable Python project.
 
 The goal is not only to make the agent play Minesweeper. The goal is to make the reasoning process clear, testable, and auditable by another developer.
 
@@ -187,7 +187,7 @@ The core design principle is:
 Make the AI reasoning inspectable before making the game visually impressive.
 ```
 
-The professional value of this project comes from the clarity of the reasoning engine, tests, and documentation.
+The value of this project comes from the clarity of the reasoning engine, tests, and documentation.
 
 The web demo is optional. The AI engine is the main artifact.
 
@@ -207,17 +207,15 @@ Possible future improvements include:
 - benchmark statistics across many random boards
 - improved documentation diagrams
 
-## Portfolio Positioning
+## Presentation Notes
 
-This project should be presented as a case study in symbolic AI and professional Python engineering.
-
-The portfolio page should focus on:
+When explaining the project, focus on:
 
 - the problem
 - the knowledge representation
 - the inference algorithm
 - the testing strategy
 - the limitations
-- what the project demonstrates professionally
+- what the implementation demonstrates technically
 
-The project should be honest about its learning origin while showing that it has been rebuilt into an auditable software artifact.
+The project should be honest about its learning origin while showing how it has been developed into an auditable software artifact.
